@@ -7,6 +7,22 @@
     <title>Login</title>
 </head>
 <body>
+    {% with messages = get_flashed_messages(with_categories = true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if form.username.errors %}
+        {% for error in form.username.errors %}
+            <span>{{ error }}</span>
+        {% endfor %}
+    {% endif %}
+
     <h1>Register Here</h1>
     <form method="POST" action="">
         {{ form.hidden_tag() }}

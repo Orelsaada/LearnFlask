@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, ValidationError
 
 app = Flask(__name__)
 
@@ -22,6 +22,11 @@ class RegisterationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Register')
 
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('That username is taken.')
+
 class LoginForm(FlaskForm):
     username = StringField('Username', 
                             validators=[DataRequired(), Length(min=2, max=20)])
@@ -30,8 +35,8 @@ class LoginForm(FlaskForm):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(10), unique= True)
-    password = db.Column(db.String(20))
+    username = db.Column(db.String(10), unique=True, index=True)
+    password = db.Column(db.String(20), unique=True)
     
 
 @app.route("/", methods=['GET', 'POST'])
@@ -43,7 +48,8 @@ def register():
         db.session.commit()
         flash('Registered!')
         return redirect(url_for('login'))
-    flash('Unsuccessful')
+    # if request.method == 'POST':
+    #     flash('Could not registerd.')
     return render_template('register.html', form=form)
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -54,12 +60,29 @@ def login():
         if user:
             if form.password.data == user.password:
                 return redirect(url_for('todo'))
+    if request.method == 'POST':
+        if not user:
+            flash('No such user registerd.')
+        else:
+            flash('Incorrect Password / Username.')
     return render_template('login.html', form=form)
+
+
+@app.route("/database")
+def database():
+    users = User.query.all()
+    return render_template('database.html', users=users)
+
+@app.route("/resetdb", methods=['POST', 'GET'])
+def resetdb():
+    reset_database()
+    return redirect(url_for('database'))
 
 @app.route("/todo")
 def todo():
     todos = Todo.query.all()
     return render_template('todo.html', todos=todos)
+
 
 @app.route("/add", methods=['POST'])
 def add():
@@ -73,6 +96,11 @@ def remove(id):
     Todo.query.filter_by(id=id).delete()
     db.session.commit()
     return redirect(url_for('todo'))
+
+
+def reset_database():
+    users = User.query.delete()
+    db.session.commit()
     
 
 if __name__ == '__main__':
