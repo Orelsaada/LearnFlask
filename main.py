@@ -66,11 +66,8 @@ def login():
         if user and form.password.data == user.password:
             login_user(user)
             return redirect(url_for('todo'))
-    if request.method == 'POST':
-        if not user:
-            flash('No such user registerd.')
         else:
-            flash('Incorrect Password / Username.')
+            flash('Unsuccesful login. Try again.')
     return render_template('login.html', form=form)
 
 
