@@ -63,10 +63,9 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            if form.password.data == user.password:
-                login_user(user)
-                return redirect(url_for('todo'))
+        if user and form.password.data == user.password:
+            login_user(user)
+            return redirect(url_for('todo'))
     if request.method == 'POST':
         if not user:
             flash('No such user registerd.')
