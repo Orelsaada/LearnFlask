@@ -16,6 +16,7 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+    <a href="{{ url_for('todo') }}">To Do List</a>
     <h1>Login!</h1>
     <form method="POST" action="">
             {{ form.hidden_tag() }}

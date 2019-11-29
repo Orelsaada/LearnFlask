@@ -21,6 +21,12 @@
     <a href="{{ url_for('login') }}">Login</a>
     <br>
     <a href="{{ url_for('database') }}">Database</a>
+    <br>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    
+    <br>
+    <span>You're login as: {{ user.username }}</span>
+
     <h1>My To-Do List:</h1>
     <ul>
         {% for todo in todos %}
