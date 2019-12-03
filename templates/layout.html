@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>My-TodoApp</title>
+    {% endif %}
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories = true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('register') }}">Register</a>
+    <br>
+    <a href="{{ url_for('login') }}">Login</a>
+    <br>
+    <a href="{{ url_for('database') }}">Database</a>
+    <br>
+    <a href="{{ url_for('todo') }}">To Do</a>
+    <br>
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+        <br>
+        <span>You're login as: {{  current_user.username }}</span>
+    {% else %}
+        <span>You're not login.</span>
+    {% endif %}
+
+
+
+    {% block content %}{% endblock %}
+</body>
+</html>
