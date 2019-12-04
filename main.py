@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_login import UserMixin, LoginManager, current_user, login_required, login_user, logout_user
@@ -65,7 +65,8 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and form.password.data == user.password:
             login_user(user)
-            return redirect(url_for('todo'))
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('todo'))
         else:
             flash('Unsuccesful login. Try again.')
     return render_template('login.html', form=form)
@@ -77,9 +78,12 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route("/database")
+@login_required
 def database():
-    users = User.query.all()
-    return render_template('database.html', users=users)
+    if current_user.username == 'admin':
+        users = User.query.all()
+        return render_template('database.html', users=users)
+    abort(401)
 
 @app.route("/resetdb", methods=['POST', 'GET'])
 def resetdb():

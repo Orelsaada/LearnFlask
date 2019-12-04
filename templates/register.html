@@ -3,7 +3,15 @@
     <h1>Register Here</h1>
     <form method="POST" action="">
         {{ form.hidden_tag() }}
-        {{ form.username.label(class="form-control-label") }}
+
+        {% if form.username.errors %}
+            {% for error in form.username.errors %}
+                <span> {{ error }} </span>
+            {% endfor %}
+        {% endif %}
+        <br>
+
+        {{ form.username.label(class="form-control-label") }} 
         {{ form.username(class="form-control form-control-lg") }}
         <br>
         {{ form.password.label }}
