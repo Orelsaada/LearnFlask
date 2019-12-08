@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Shared Todos!</h1>
+
+{% for todo in shared_todos %}
+    <li> "{{ todo.text }}" shared by {{ todo.owner.username }}</li>
+{% endfor %}
+
+{% endblock %}

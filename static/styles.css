@@ -17,4 +17,6 @@ h1 {text-align: center; margin-bottom: 0;}
 form {text-align: center;}
 input {margin: 5px;}
 
-ul {display: flex; align-items: center; justify-content: center; flex-direction: column;}
+ul {display: flex; align-items: center; justify-content: center; flex-direction: column; margin-right: 30px; margin-left: auto;}
+
+table, th, td {border: 1px solid black; border-collapse: collapse; color: black; background-color: white;}
