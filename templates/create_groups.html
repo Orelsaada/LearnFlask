@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1>Create New Group</h1>
+
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+
+    {{ form.group_name.label }}
+    {{ form.group_name }}
+    <br>
+    {{ form.group_password.label }}
+    {{ form.group_password }}
+    <br>
+
+    {{ form.create }}
+</form>
+
+{% endblock %}
