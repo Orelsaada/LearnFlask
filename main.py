@@ -179,13 +179,27 @@ def addToGroup(id):
     user = request.form.get('chosenUser')
     db_user = User.query.filter_by(username=user).first()
     if not db_user:
-        flash("Check username's spelling again.")
+        flash("Can't add to group. Check username's spelling again.")
         return redirect(url_for('database'))
     group.users.append(db_user)
     db.session.commit()
     flash(f'{user} joined to {group}')
     return redirect(url_for('database'))
 
+
+@app.route("/removeFromGroup/<id>", methods=['POST'])
+def removeFromGroup(id):
+    group = Group.query.filter_by(id=id).first()
+    user = request.form.get('chosenUser')
+    print(user)
+    db_user = User.query.filter_by(username=user).first()
+    if not db_user:
+        flash("Can't remove from group. Check username's spelling again.")
+        return redirect(url_for('database'))
+    group.users.remove(db_user)
+    db.session.commit()
+    flash(f'{user} removed from {group}')
+    return redirect(url_for('database'))
 
 def reset_database():
     users = User.query.delete()
