@@ -6,15 +6,17 @@
     <h1>My To-Do List:</h1>
     <ul>
         {% for todo in todos %}
-        <form action="/remove/{{ todo.id }}" method="POST">
-            <li> {{ todo.text }}   <input type="submit" value="Remove" style="font-size: 10px;">
-        </form>
-        <form action="/share/{{ todo.id }}" method="POST">
-            <input type="submit" value="Share" style="font-size: 10px;">
-        </form>
-            </li>
-        
-            <br>
+        <div class="Container">
+            <form action="/remove/{{ todo.id }}" method="POST">
+                <li> {{ todo.text }}   <input type="submit" value="Remove" style="font-size: 10px;">
+            </form>
+            <form action="/share/{{ todo.id }}" method="POST">
+                <input type="submit" value="Share" style="font-size: 10px;">
+            </form>
+                </li>
+            
+                <br>
+        </div>
         {% endfor %}
     </ul>
     <form action="/add" method="POST">

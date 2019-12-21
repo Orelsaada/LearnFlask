@@ -168,10 +168,23 @@ def create_group():
         db.session.add(group)
         db.session.commit()
         add_owner_to_group()
-        db.session.commit()
         flash('New Group Created!')
         return redirect(url_for('database'))
     return render_template('create_groups.html', form=form, title='Create New Group')
+
+
+@app.route("/addToGroup/<id>", methods=['POST'])
+def addToGroup(id):
+    group = Group.query.filter_by(id=id).first()
+    user = request.form.get('chosenUser')
+    db_user = User.query.filter_by(username=user).first()
+    if not db_user:
+        flash("Check username's spelling again.")
+        return redirect(url_for('database'))
+    group.users.append(db_user)
+    db.session.commit()
+    flash(f'{user} joined to {group}')
+    return redirect(url_for('database'))
 
 
 def reset_database():
@@ -183,6 +196,7 @@ def add_owner_to_group():
     groups = Group.query.all()
     last_group = groups[-1]
     last_group.users.append(user)    
+    db.session.commit()
 
 if __name__ == '__main__':
     app.run(debug=True)
