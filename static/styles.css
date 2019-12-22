@@ -9,7 +9,7 @@ html, body {
 }
 
 .links {display: flex; align-items: center; justify-content: center;}
-a {margin: 10px;}
+.links a {margin: 10px;}
 
 .login-info {text-align: center; color: red;}
 

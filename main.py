@@ -201,6 +201,24 @@ def removeFromGroup(id):
     flash(f'{user} removed from {group}')
     return redirect(url_for('database'))
 
+@app.route("/mygroups")
+@login_required
+def my_groups():
+    user = current_user
+    groups = Group.query.all()
+    my_groups = []
+    for group in groups:
+        if user in group.users:
+            my_groups.append(group)
+    return render_template('my_groups.html', my_groups=my_groups)
+
+
+@app.route("/mygroups/<group_name>")
+@login_required
+def group_info(group_name):
+    group = Group.query.filter_by(name=group_name).first()
+    return render_template('group_info.html', group=group)
+
 def reset_database():
     users = User.query.delete()
     db.session.commit()

@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h1>My Groups:</h1>
+
+    <table style="width: 50%; margin-left: auto; margin-right: auto;">
+        <tr>
+            <th>Group</th>
+            <th>Users</th>
+        </tr>
+
+    {% for group in my_groups %}
+        
+            <tr>
+                <td style="text-align: center;"> <a href="{{ url_for('group_info', group_name=group) }}"> {{ group }} </a></td>
+                <td style="text-align: center;"> {{ group.users }} </td>
+            </tr>
+        
+    {% endfor %}
+
+    </table>
+
+{% endblock %}
