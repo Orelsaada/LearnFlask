@@ -5,6 +5,25 @@
     <br>
     <span>Users are: {{ group.users }}</span>
     <br>
-    <!-- #TODO:
-    Create a form to add items to the shopping list. -->
+
+    <h3>Create a new item:</h3>
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.name.label }}
+        {{ form.name }}
+        <br>
+        {{ form.quantity.label }}
+        {{ form.quantity }}
+        <br>
+        {{ form.image.label }}
+        {{ form.image }}
+        <br>
+        {{ form.create }}
+    </form>
+    <br>
+    {% for item in items %}
+        {% if item.group == group.name %}
+            <li>{{ item.name }} -- {{ item.quantity }} -- {{ item.image }}</li>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

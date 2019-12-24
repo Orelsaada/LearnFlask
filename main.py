@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from flask_login import UserMixin, LoginManager, current_user, login_required, login_user, logout_user
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, Length, ValidationError
 
 app = Flask(__name__)
@@ -44,6 +45,13 @@ class CreateGroupForm(FlaskForm):
     group_password = PasswordField('Group Password', validators=[DataRequired()])
     create = SubmitField('Create')
 
+class CreateItemForm(FlaskForm):
+    name = StringField('Item Name',
+                        validators=[DataRequired(), Length(min=2, max=20)])
+    quantity = IntegerField('Quantity',validators=[DataRequired()])
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png'])])
+    create = SubmitField('Create')
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(10), unique=True, index=True)
@@ -73,6 +81,14 @@ class Group(db.Model):
                                                 order_by=name))
     def __repr__(self):
         return self.name
+
+
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(10), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    image = db.Column(db.String(20), nullable=False, default='default.jpg')
+    group = db.Column(db.String(20), nullable=False)
 
 
 @login_manager.user_loader
@@ -213,11 +229,21 @@ def my_groups():
     return render_template('my_groups.html', my_groups=my_groups)
 
 
-@app.route("/mygroups/<group_name>")
+@app.route("/mygroups/<group_name>", methods=['POST','GET'])
 @login_required
 def group_info(group_name):
     group = Group.query.filter_by(name=group_name).first()
-    return render_template('group_info.html', group=group)
+    form = CreateItemForm()
+    item_name = form.name.data
+    item_quantity = form.quantity.data
+    items = Item.query.all()
+    if form.validate_on_submit():
+        new_item = Item(name= item_quantity, quantity= item_quantity, group=group_name)
+        db.session.add(new_item)
+        db.session.commit()
+        flash('New item added.')
+        return redirect(url_for('group_info', group_name=group_name))
+    return render_template('group_info.html', group=group, form=form, items=items)
 
 def reset_database():
     users = User.query.delete()
