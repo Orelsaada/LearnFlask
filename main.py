@@ -1,10 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
+from flask_wtf.file import  FileField, FileAllowed
 from flask_login import UserMixin, LoginManager, current_user, login_required, login_user, logout_user
 from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, Length, ValidationError
+from werkzeug.utils import secure_filename
+import os
+import secrets
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -49,7 +53,7 @@ class CreateItemForm(FlaskForm):
     name = StringField('Item Name',
                         validators=[DataRequired(), Length(min=2, max=20)])
     quantity = IntegerField('Quantity',validators=[DataRequired()])
-    image = FileField('Image', validators=[FileAllowed(['jpg', 'png'])])
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
     create = SubmitField('Create')
 
 class User(db.Model, UserMixin):
@@ -236,9 +240,17 @@ def group_info(group_name):
     form = CreateItemForm()
     item_name = form.name.data
     item_quantity = form.quantity.data
+    
+    
+
     items = Item.query.all()
     if form.validate_on_submit():
-        new_item = Item(name= item_quantity, quantity= item_quantity, group=group_name)
+        filename = 'default.jpg'
+        if form.image.data:
+            item_image = form.image.data
+            filename = secure_filename(item_image.filename)
+            item_image.save(os.path.join("F:\\Python\\Sites\\ToDo\\static\\", 'profile_pics', filename))
+        new_item = Item(name=item_name, quantity=item_quantity, group=group_name, image=filename)
         db.session.add(new_item)
         db.session.commit()
         flash('New item added.')
@@ -255,6 +267,8 @@ def add_owner_to_group():
     last_group = groups[-1]
     last_group.users.append(user)    
     db.session.commit()
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -7,7 +7,7 @@
     <br>
 
     <h3>Create a new item:</h3>
-    <form action="" method="POST">
+    <form action="" method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {{ form.name.label }}
         {{ form.name }}
@@ -23,7 +23,7 @@
     <br>
     {% for item in items %}
         {% if item.group == group.name %}
-            <li>{{ item.name }} -- {{ item.quantity }} -- {{ item.image }}</li>
+            <li>{{ item.name }} -- {{ item.quantity }} -- <img src="{{ url_for('static', filename='profile_pics/' + item.image) }}" alt="Item-Image"></li>
         {% endif %}
     {% endfor %}
 {% endblock %}

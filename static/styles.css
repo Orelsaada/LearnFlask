@@ -22,3 +22,5 @@ ul {display: flex; align-items: center; justify-content: center; flex-direction:
 table, th, td {border: 1px solid black; border-collapse: collapse; color: black; background-color: white;}
 
 .Container {display: flex; flex-wrap: wrap; justify-content: center;}
+
+img {width: 30px; height: 30px;}
